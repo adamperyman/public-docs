@@ -37,8 +37,8 @@ if [ -d "/root/.ssh/" ]; then
 fi
 
 # Install deps.
-apt-get -qq update &&
-  apt-get -qq install -y whois git apt-utils
+apt-get update -qq &&
+  apt-get install -qq -o=Dpkg::Use-Pty=0 whois git apt-utils
 
 # Get password hash.
 echo "Creating hashed password.."
@@ -70,20 +70,18 @@ fi
 
 echo "Logging in as $NEW_USER.."
 if su $NEW_USER && cd ~; then
-  echo "Successfully logged in as $USER."
+  echo "Successfully logged in as $NEW_USER."
 else
-  echo "Failed to login as $NEW_USER, current users is $USER."
+  echo "Failed to login as $NEW_USER, current user is $NEW_USER."
   exit 1
 fi
 
-echo "Time for packages!"
-
 # Clean up.
-apt-get -qq remove docker docker-engine docker.io
+apt-get remove -qq docker docker-engine docker.io
 
 # Here we go.
-sudo apt-get -qq update && \
-  apt-get -qq install -y \
+sudo apt-get update -qq && \
+  apt-get install -qq -o=Dpkg::Use-Pty=0 \
     linux-image-extra-$(uname -r) \
     linux-image-extra-virtual \
     apt-transport-https \
@@ -105,8 +103,8 @@ sudo add-apt-repository \
   $(lsb_release -cs) \
   stable"
 
-sudo apt-get -qq update && \
-  apt-get -qq install -y docker-ce
+sudo apt-get update -qq && \
+  apt-get install -qq -o=Dpkg::Use-Pty=0 docker-ce
 
 sudo apt-key fingerprint 0EBFCD88
 if [ $? -eq 0 ]; then
@@ -156,8 +154,8 @@ fi
 echo "Finished creating SSH keys."
 
 # Setup Vim.
-sudo apt-get -qq update &&
-  apt-get -qq install -y vim-gnome # Lazy man's way of ensuring Vim was compiled with the +clipboard flag.
+sudo apt-get update -qq &&
+  apt-get install -qq -o=Dpkg::Use-Pty=0 vim-gnome # Lazy man's way of ensuring Vim was compiled with the +clipboard flag.
 
 # Amix's .vimrc.
 if git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime; then
