@@ -22,6 +22,7 @@ fi
 # Install deps.
 apt-get update
 apt-get install -y \
+  apt-utils
   whois
   git
 
