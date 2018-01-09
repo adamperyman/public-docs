@@ -19,11 +19,29 @@ if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
   exit 1
 fi
 
+# Setup SSH for root if necessary, use Ed25519 (new) or RSA depending on your needs.
+if [ -d "/root/.ssh/" ]; then
+  if [ "$SSH_ENCRYPTION_ALGORITHM" == "ed25519" ]; then
+    echo "Creating SSH keys for ROOT user using $SSH_ENCRYPTION_ALGORITHM algorithm.."
+    ssh-keygen -t ed25519 -a 100 -N "" -f id_ed25519 # Similar complexity to RSA 4096 but significantly smaller.
+  elif [ "$SSH_ENCRYPTION_ALGORITHM" == "rsa" ]; then
+    echo "Creating SSH keys for ROOT user using RSA algorithm.."
+    ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -f id_rsa
+  else
+    echo "Unknown SSH_ENCRYPTION_ALGORITHM, defaulting to RSA."
+    echo "Creating SSH keys for ROOT user using RSA algorithm.."
+    ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -f id_rsa
+  fi
+
+  echo "Finished creating SSH keys."
+fi
+
 # Install deps.
-apt-get -qq update
-apt-get -qq install -y whois git apt-utils
+apt-get -qq update &&
+  apt-get -qq install -y whois git apt-utils
 
 # Get password hash.
+echo "Creating hashed password.."
 HASHED_PASSWORD=$(mkpasswd -m sha-512 $NEW_PASSWORD)
 
 if [ -z ${HASHED_PASSWORD+x} ]; then
@@ -31,10 +49,12 @@ if [ -z ${HASHED_PASSWORD+x} ]; then
   exit 1
 fi
 
+echo "Hashed password created successfully."
+
 # Create user.
 echo "Creating user: $NEW_USER.."
 if useradd -m -p $HASHED_PASSWORD -s /bin/bash $NEW_USER; then
-  echo "User: $NEW_USER created successfully!"
+  echo "User: $NEW_USER created successfully."
 else
   echo "Failed to create user: $NEW_USER."
   exit 1
@@ -42,17 +62,21 @@ fi
 
 echo "Assigning group permissions.."
 if usermod -aG sudo $NEW_USER; then
-  echo "Successfully assigned $NEW_USER to sudo group.."
+  echo "Successfully assigned $NEW_USER to sudo group."
 else
   echo "Failed to assign $NEW_USER to sudo group."
   exit 1
 fi
 
 echo "Logging in as $NEW_USER.."
-su $NEW_USER && cd ~
+if su $NEW_USER && cd ~; then
+  echo "Successfully logged in as $USER."
+else
+  echo "Failed to login as $NEW_USER, current users is $USER."
+  exit 1
+fi
 
-# Get more deps.
-echo "Gonna get some packages.."
+echo "Time for packages!"
 
 # Clean up.
 apt-get -qq remove docker docker-engine docker.io
@@ -69,7 +93,12 @@ sudo apt-get -qq update && \
 
 # Docker GPG key
 echo "Adding Docker GPG key.."
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+if curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -; then
+  echo "Successfully added Docker GPG key."
+else
+  echo "Failed to add Docker GPG key."
+  exit 1
+fi
 
 sudo add-apt-repository \
   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
@@ -100,20 +129,31 @@ else
   exit 1
 fi
 
-echo "Finished installing docker!"
+echo "Finished installing docker."
 
 echo "Assigning $NEW_USER to docker group.."
 sudo groupadd docker
-sudo usermod -aG docker $NEW_USER
+if sudo usermod -aG docker $NEW_USER; then
+  echo "Successfully added $NEW_USER to docker group."
+else
+  echo "Failed to add $NEW_USER to docker group."
+  # Don't need to exit here, investigate manually.
+fi
 
 # Setup SSH, use Ed25519 (new) or RSA depending on your needs.
 if [ "$SSH_ENCRYPTION_ALGORITHM" == "ed25519" ]; then
   echo "Creating SSH keys using $SSH_ENCRYPTION_ALGORITHM algorithm.."
   ssh-keygen -t ed25519 -a 100 -N "" -f id_ed25519 # Similar complexity to RSA 4096 but significantly smaller.
+elif [ "$SSH_ENCRYPTION_ALGORITHM" == "rsa" ]; then
+  echo "Creating SSH keys using RSA algorithm.."
+  ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -f id_rsa
 else
+  echo "Unknown SSH_ENCRYPTION_ALGORITHM, defaulting to RSA."
   echo "Creating SSH keys using RSA algorithm.."
   ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -f id_rsa
 fi
+
+echo "Finished creating SSH keys."
 
 # Setup Vim.
 sudo apt-get -qq update &&
@@ -129,7 +169,6 @@ if git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime; then
   sh ~/dev/vim-settings/setup.sh
 else
   echo "Failed to get Amix's .vimrc, didn't setup AP's custom settings."
-  # Probably don't need to fail out here.
 fi
 
 # Output.
@@ -138,3 +177,5 @@ cat ~/.ssh/id_$SSH_ENCRYPTION_ALGORITHM.pub
 
 echo "We're done here, please logout and back in to refresh user groups for user: $NEW_USER."
 echo "Have a wonderful day! :)"
+
+exit 0
