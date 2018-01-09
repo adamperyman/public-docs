@@ -29,6 +29,8 @@ apt-get install -y \
 # Get password hash.
 HASHED_PASSWORD=mkpasswd -m sha-512 $NEW_PASSWORD
 
+echo $HASHED_PASSWORD
+
 if [ -z $HASHED_PASSWORD ]; then
   echo "Failed to create hashed password.."
   exit 1
