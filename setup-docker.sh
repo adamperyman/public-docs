@@ -20,7 +20,7 @@ if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
 fi
 
 # Install deps.
-apt-get update
+apt-get update -qq
 apt-get install -y whois git apt-utils
 
 # Get password hash.
@@ -51,9 +51,6 @@ fi
 echo "Logging in as $NEW_USER.."
 su $NEW_USER && cd ~
 
-echo "Let's just get the password out of the way early.."
-sudo
-
 # Get more deps.
 echo "Gonna get some packages.."
 
@@ -61,7 +58,7 @@ echo "Gonna get some packages.."
 apt-get remove docker docker-engine docker.io
 
 # Here we go.
-sudo apt-get update
+sudo apt-get update -qq
 sudo apt-get install -y \
   linux-image-extra-$(uname -r) \
   linux-image-extra-virtual \
@@ -79,7 +76,7 @@ sudo add-apt-repository \
   $(lsb_release -cs) \
   stable"
 
-sudo apt-get update
+sudo apt-get update -qq
 sudo apt-get install -y docker-ce
 
 sudo apt-key fingerprint 0EBFCD88
@@ -119,7 +116,7 @@ else
 fi
 
 # Setup Vim.
-sudo apt-get update
+sudo apt-get update -qq
 sudo apt-get install -y vim-gnome # Lazy man's way of ensuring Vim was compiled with the +clipboard flag.
 
 # Amix's .vimrc.
