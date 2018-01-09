@@ -20,8 +20,8 @@ if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
 fi
 
 # Install deps.
-apt-get update -qq
-apt-get install -y whois git apt-utils
+apt-get -qq update
+apt-get -qq install -y whois git apt-utils
 
 # Get password hash.
 HASHED_PASSWORD=$(mkpasswd -m sha-512 $NEW_PASSWORD)
@@ -55,17 +55,17 @@ su $NEW_USER && cd ~
 echo "Gonna get some packages.."
 
 # Clean up.
-apt-get remove docker docker-engine docker.io
+apt-get -qq remove docker docker-engine docker.io
 
 # Here we go.
-sudo apt-get update -qq
-sudo apt-get install -y \
-  linux-image-extra-$(uname -r) \
-  linux-image-extra-virtual \
-  apt-transport-https \
-  ca-certificates \
-  curl \
-  software-properties-common
+sudo apt-get -qq update && \
+  apt-get -qq install -y \
+    linux-image-extra-$(uname -r) \
+    linux-image-extra-virtual \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
 
 # Docker GPG key
 echo "Adding Docker GPG key.."
@@ -76,8 +76,8 @@ sudo add-apt-repository \
   $(lsb_release -cs) \
   stable"
 
-sudo apt-get update -qq
-sudo apt-get install -y docker-ce
+sudo apt-get -qq update && \
+  apt-get -qq install -y docker-ce
 
 sudo apt-key fingerprint 0EBFCD88
 if [ $? -eq 0 ]; then
@@ -116,8 +116,8 @@ else
 fi
 
 # Setup Vim.
-sudo apt-get update -qq
-sudo apt-get install -y vim-gnome # Lazy man's way of ensuring Vim was compiled with the +clipboard flag.
+sudo apt-get -qq update &&
+  apt-get -qq install -y vim-gnome # Lazy man's way of ensuring Vim was compiled with the +clipboard flag.
 
 # Amix's .vimrc.
 if git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime; then
