@@ -1,8 +1,23 @@
 #!/bin/bash
 
-# A hacky little setup script to automate the creation of VMs.
+# A hacky little setup script to automate the creation of VMs (docker version).
 # Author: Adam Peryman <adam.peryman@gmail.com>
 # Tested on Ubuntu 16.04 LTS
+
+if [ -z $NEW_USER+x ]; then
+  echo "ENV var NEW_USER is undefined."
+  exit 1
+fi
+
+if [ -z $NEW_PASSWORD+x ]; then
+  echo "ENV var NEW_PASSWORD is undefined."
+  exit 1
+fi
+
+if [ -z $SSH_ENCRYPTION_ALGORITHM+x ]; then
+  echo "ENV var SSH_ENCRYPTION_ALGORITHM is undefined."
+  exit 1
+fi
 
 # Install deps.
 apt-get update
@@ -10,19 +25,10 @@ apt-get install -y \
   whois
   git
 
-# Get new user data.
-echo -n "Please enter new username: "
-read NEW_USER
+# Get password hash.
+HASHED_PASSWORD=mkpasswd -m sha-512 $NEW_PASSWORD
 
-echo -n "Please enter new password: "
-read NEW_PASSWORD
-
-echo -n "Please enter SHH encryption algorithm (ed25519 or rsa): "
-read SSH_ENCRYPTION_ALGORITHM
-
-if HASHED_PASSWORD=mkpasswd -m sha-512 $NEW_PASSWORD; then
-  echo "Successfully created hashed password.."
-else
+if [ -z $HASHED_PASSWORD ]; then
   echo "Failed to create hashed password.."
   exit 1
 fi
