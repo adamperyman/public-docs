@@ -21,10 +21,7 @@ fi
 
 # Install deps.
 apt-get update
-apt-get install -y \
-  apt-utils
-  whois
-  git
+apt-get install -y whois git apt-utils
 
 # Get password hash.
 HASHED_PASSWORD=$(mkpasswd -m sha-512 $NEW_PASSWORD)
