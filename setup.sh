@@ -124,7 +124,7 @@ if git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime; then
 
   # AP's custom settings.
   mkdir -p ~/dev
-  git clone https://github.com/x0bile/vim-settings.git
+  git clone https://github.com/x0bile/vim-settings.git ~/dev/vim-settings
   sh ~/dev/vim-settings/setup.sh
 else
   echo "Failed to get Amix's .vimrc, didn't setup AP's custom settings."

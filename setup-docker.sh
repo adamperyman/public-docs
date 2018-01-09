@@ -4,17 +4,17 @@
 # Author: Adam Peryman <adam.peryman@gmail.com>
 # Tested on Ubuntu 16.04 LTS
 
-if [ -z $NEW_USER+x ]; then
+if [ -z ${NEW_USER+x} ]; then
   echo "ENV var NEW_USER is undefined."
   exit 1
 fi
 
-if [ -z $NEW_PASSWORD+x ]; then
+if [ -z ${NEW_PASSWORD+x} ]; then
   echo "ENV var NEW_PASSWORD is undefined."
   exit 1
 fi
 
-if [ -z $SSH_ENCRYPTION_ALGORITHM+x ]; then
+if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
   echo "ENV var SSH_ENCRYPTION_ALGORITHM is undefined."
   exit 1
 fi
@@ -26,7 +26,7 @@ apt-get install -y whois git apt-utils
 # Get password hash.
 HASHED_PASSWORD=$(mkpasswd -m sha-512 $NEW_PASSWORD)
 
-if [ -z $HASHED_PASSWORD ]; then
+if [ -z ${HASHED_PASSWORD+x} ]; then
   echo "Failed to create hashed password.."
   exit 1
 fi
@@ -128,7 +128,7 @@ if git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime; then
 
   # AP's custom settings.
   mkdir -p ~/dev
-  git clone https://github.com/x0bile/vim-settings.git
+  git clone https://github.com/x0bile/vim-settings.git ~/dev/vim-settings
   sh ~/dev/vim-settings/setup.sh
 else
   echo "Failed to get Amix's .vimrc, didn't setup AP's custom settings."
