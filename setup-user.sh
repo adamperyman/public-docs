@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Clean up.
-apt-get remove docker docker-engine docker.io
+sudo apt-get remove docker docker-engine docker.io
 
 # Here we go.
 sudo $apt_update_cmd && \
