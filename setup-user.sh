@@ -8,7 +8,7 @@ SSH_ENCRYPTION_ALGORITHM=$4
 new_user_home_dir=$(eval echo "~$USER_NAME")
 
 if [ -z ${new_user_home_dir:x} ]; then
-  echo "new_user_home_dir is undefined."
+  echo "Failed to find home directory for user: $USER_NAME."
   exit 1
 fi
 
@@ -99,7 +99,7 @@ if sudo git clone --depth=1 https://github.com/amix/vimrc.git $new_user_home_dir
   # AP's custom settings.
   mkdir -p $new_user_home_dir/dev
   sudo git clone https://github.com/x0bile/vim-settings.git $new_user_home_dir/dev/vim-settings
-  sudo bash $new_user_home_dir/dev/vim-settings/setup.sh $new_user_home_dir
+  (cd $new_user_home_dir/dev/vim-settings ; sh $new_user_home_dir/dev/vim-settings/setup.sh)
 else
   echo "Failed to get Amix's .vimrc, didn't setup AP's custom settings."
 fi
