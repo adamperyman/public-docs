@@ -16,15 +16,14 @@ if [ -z ${USER_PASS+x} ]; then
 
   password_valid=0
   while [ $password_valid == 0 ]; do
-    echo -n "Please enter new password: "
-    read -s USER_PASS1
+    read -s -p "Please enter new password: " user_pass1
+    echo
 
-    echo -n "Please enter password again: "
-    read -S USER_PASS2
+    read -s -p "Please enter new password (again): " user_pass2
 
-    if [ "$USER_PASS1" == "$USER_PASS2" ]; then
+    if [ "$user_pass1" == "$user_pass2" ]; then
       password_valid=1
-      USER_PASS=USER_PASS1
+      USER_PASS=user_pass1
     else
       echo "Passwords don't match! Try again.."
     fi
