@@ -20,6 +20,7 @@ if [ -z ${USER_PASS+x} ]; then
     echo
 
     read -s -p "Please enter new password (again): " user_pass2
+    echo
 
     if [ "$user_pass1" == "$user_pass2" ]; then
       password_valid=1
