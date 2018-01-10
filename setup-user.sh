@@ -99,7 +99,7 @@ if [ ! -f "$new_user_home_dir/.ssh/authorized_keys" ]; then
 fi
 
 enter_pub_key=y
-while [ "$should_add_pub_key" != "n" ]; do
+while [ "$enter_pub_key" != "n" ]; do
   read -p "Would you like to add a public SSH key to User: $USER_NAME's authorized_keys file? (y/n): " enter_pub_key
   echo
 
