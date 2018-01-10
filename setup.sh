@@ -24,7 +24,7 @@ if [ -z ${USER_PASS+x} ]; then
 
     if [ "$user_pass1" == "$user_pass2" ]; then
       password_valid=1
-      USER_PASS=user_pass1
+      USER_PASS=$user_pass1
     else
       echo "Passwords don't match! Try again.."
     fi
