@@ -5,6 +5,8 @@ USER_PASS=$2
 USER_EMAIL=$3
 SSH_ENCRYPTION_ALGORITHM=$4
 
+new_user_home_dir=$(eval echo "~$USER_NAME")
+
 # Clean up.
 sudo -S apt-get remove docker docker-engine docker.io
 
@@ -69,14 +71,14 @@ fi
 # Setup SSH, use Ed25519 (new) or RSA depending on your needs.
 if [ "$SSH_ENCRYPTION_ALGORITHM" == "ed25519" ]; then
   echo "Creating SSH keys using $SSH_ENCRYPTION_ALGORITHM algorithm.."
-  ssh-keygen -t ed25519 -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_ed25519
+  ssh-keygen -t ed25519 -a 100 -N "" -C $USER_EMAIL -f $new_user_home_dir/.ssh/id_ed25519
 elif [ "$SSH_ENCRYPTION_ALGORITHM" == "rsa" ]; then
   echo "Creating SSH keys using RSA algorithm.."
-  ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_rsa
+  ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -C $USER_EMAIL -f $new_user_home_dir/.ssh/id_rsa
 else
   echo "Unknown SSH_ENCRYPTION_ALGORITHM, defaulting to RSA."
   echo "Creating SSH keys using RSA algorithm.."
-  ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_rsa
+  ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -C $USER_EMAIL -f $new_user_home_dir/.ssh/id_rsa
 fi
 
 echo "Finished creating SSH keys."
@@ -86,20 +88,20 @@ echo "Finished creating SSH keys."
 sudo $apt_update_cmd && sudo $apt_install_cmd vim-gnome
 
 # Amix's .vimrc.
-if sudo git clone --depth=1 https://github.com/amix/vimrc.git $HOME/.vim_runtime; then
-  bash $HOME/.vim_runtime/install_awesome_vimrc.sh
+if sudo git clone --depth=1 https://github.com/amix/vimrc.git $new_user_home_dir/.vim_runtime; then
+  bash $new_user_home_dir/.vim_runtime/install_awesome_vimrc.sh
 
   # AP's custom settings.
-  mkdir -p $HOME/dev
-  sudo git clone https://github.com/x0bile/vim-settings.git $HOME/dev/vim-settings
-  bash $HOME/dev/vim-settings/setup.sh
+  mkdir -p $new_user_home_dir/dev
+  sudo git clone https://github.com/x0bile/vim-settings.git $new_user_home_dir/dev/vim-settings
+  bash $new_user_home_dir/dev/vim-settings/setup.sh
 else
   echo "Failed to get Amix's .vimrc, didn't setup AP's custom settings."
 fi
 
 # Output.
-echo "You should add the following PUBLIC key to any services that require it, e.g. Github..\n"
-cat $HOME/.ssh/id_$SSH_ENCRYPTION_ALGORITHM.pub
+echo "You should add the following PUBLIC key to any services that require it, e.g. Github.."
+cat $new_user_home_dir/.ssh/id_$SSH_ENCRYPTION_ALGORITHM.pub
 
 echo "We're done here, please logout and back in to refresh user groups for user: $USER_NAME."
 echo "Have a wonderful day! :)"
