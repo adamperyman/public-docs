@@ -43,7 +43,7 @@ if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
 
   encryption_algorithm_valid=0
   while [ $encryption_algorithm_valid == 0 ]; do
-    read -s -p "Please enter SSH encryption algorithm (ed25519 or rsa): " SSH_ENCRYPTION_ALGORITHM
+    read -p "Please enter SSH encryption algorithm (ed25519 or rsa): " SSH_ENCRYPTION_ALGORITHM
     echo
 
     if [ "$SSH_ENCRYPTION_ALGORITHM" == "ed25519" ] || [ "$SSH_ENCRYPTION_ALGORITHM" == "rsa" ]; then
