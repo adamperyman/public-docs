@@ -88,6 +88,31 @@ fi
 
 echo "Finished creating SSH keys."
 
+# Generate authorized_keys.
+if [ ! -f "$new_user_home_dir/.ssh/authorized_keys" ]; then
+  echo "authorized_keys file not found for User: $USER_NAME, creating now.."
+
+  touch $new_user_home_dir/.ssh/authorized_keys
+  sudo chown $USER_NAME $new_user_home_dir/.ssh/authorized_keys
+
+  echo "Finished creating authorized_keys file."
+fi
+
+enter_pub_key=y
+while [ "$should_add_pub_key" != "n" ]; do
+  read -p "Would you like to add a public SSH key to User: $USER_NAME's authorized_keys file? (y/n): " enter_pub_key
+  echo
+
+  if [ "$enter_pub_key" == "y" ]; then
+    read -p "Please enter public key then press enter: " pub_key
+    echo
+
+    echo $pub_key >> $new_user_home_dir/.ssh/authorized_keys
+
+    echo "Successfully added public key to $USER_NAME's authorized_keys."
+  fi
+done
+
 # Setup Vim.
 # Installing vim-gnome is the lazy man's way of ensuring Vim was compiled with the +clipboard flag.
 sudo $apt_update_cmd && sudo $apt_install_cmd vim-gnome
