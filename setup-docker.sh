@@ -85,8 +85,7 @@ else
 fi
 
 echo "Logging in as $USER_NAME.."
-su $USER_NAME
-sudo
+sudo su $USER_NAME
 if [ $? -eq 0 ]; then
   echo "Successfully logged in as $USER_NAME."
 else
