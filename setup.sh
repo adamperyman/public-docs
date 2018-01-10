@@ -50,7 +50,7 @@ apt_update_cmd="apt-get $apt_switches update"
 apt_install_cmd="apt-get $apt_switches install"
 
 # Setup SSH for root if necessary, use Ed25519 (new) or RSA depending on your needs.
-if [ -d "/root/.ssh/" ]; then
+if [ -d "$HOME/.ssh/" ]; then
   if [ "$SSH_ENCRYPTION_ALGORITHM" == "ed25519" ]; then
     echo "Creating SSH keys for ROOT user using $SSH_ENCRYPTION_ALGORITHM algorithm.."
     ssh-keygen -t ed25519 -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_ed25519

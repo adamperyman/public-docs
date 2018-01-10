@@ -9,8 +9,8 @@ SSH_ENCRYPTION_ALGORITHM=$4
 sudo -S apt-get remove docker docker-engine docker.io
 
 # Here we go.
-sudo -S $apt_update_cmd && \
-  sudo -S $apt_install_cmd \
+sudo $apt_update_cmd && \
+  sudo $apt_install_cmd \
     linux-image-extra-$(uname -r) \
     linux-image-extra-virtual \
     apt-transport-https \
@@ -20,21 +20,21 @@ sudo -S $apt_update_cmd && \
 
 # Docker GPG key
 echo "Adding Docker GPG key.."
-if curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo -S apt-key add -; then
+if curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -; then
   echo "Successfully added Docker GPG key."
 else
   echo "Failed to add Docker GPG key."
   exit 1
 fi
 
-sudo -S add-apt-repository \
+sudo add-apt-repository \
   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) \
   stable"
 
-sudo -S $apt_update_cmd && sudo -S $apt_install_cmd docker-ce
+sudo $apt_update_cmd && sudo $apt_install_cmd docker-ce
 
-sudo -S apt-key fingerprint 0EBFCD88
+sudo apt-key fingerprint 0EBFCD88
 if [ $? -eq 0 ]; then
   echo "Docker installed successfully!"
 else
@@ -44,9 +44,9 @@ fi
 
 echo "Installing docker-compose.."
 
-sudo -S curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 
-sudo -S chmod +x /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
 if docker-compose --version; then
   echo "docker-compose installed successfully!"
@@ -58,8 +58,8 @@ fi
 echo "Finished installing docker."
 
 echo "Assigning $USER_NAME to docker group.."
-sudo -S groupadd docker
-if sudo -S usermod -aG docker $USER_NAME; then
+sudo groupadd docker
+if sudo usermod -aG docker $USER_NAME; then
   echo "Successfully added $USER_NAME to docker group."
 else
   echo "Failed to add $USER_NAME to docker group."
@@ -83,15 +83,15 @@ echo "Finished creating SSH keys."
 
 # Setup Vim.
 # Installing vim-gnome is the lazy man's way of ensuring Vim was compiled with the +clipboard flag.
-sudo -S $apt_update_cmd && sudo -S $apt_install_cmd vim-gnome
+sudo $apt_update_cmd && sudo $apt_install_cmd vim-gnome
 
 # Amix's .vimrc.
-if git clone --depth=1 https://github.com/amix/vimrc.git $HOME/.vim_runtime; then
+if sudo git clone --depth=1 https://github.com/amix/vimrc.git $HOME/.vim_runtime; then
   bash $HOME/.vim_runtime/install_awesome_vimrc.sh
 
   # AP's custom settings.
   mkdir -p $HOME/dev
-  git clone https://github.com/x0bile/vim-settings.git $HOME/dev/vim-settings
+  sudo git clone https://github.com/x0bile/vim-settings.git $HOME/dev/vim-settings
   bash $HOME/dev/vim-settings/setup.sh
 else
   echo "Failed to get Amix's .vimrc, didn't setup AP's custom settings."
