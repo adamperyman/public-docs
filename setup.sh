@@ -41,8 +41,17 @@ fi
 if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
   echo "ENV var SSH_ENCRYPTION_ALGORITHM is undefined."
 
-  echo -n "Please enter SSH encryption algorithm (ed25519 or rsa): "
-  read SSH_ENCRYPTION_ALGORITHM
+  encryption_algorithm_valid=0
+  while [ $encryption_algorithm_valid == 0]; do
+    read -s -p "Please enter SSH encryption algorithm (ed25519 or rsa): " SSH_ENCRYPTION_ALGORITHM
+    echo
+
+    if [ "$SSH_ENCRYPTION_ALGORITHM" == "ed25519" ] || [ "$SSH_ENCRYPTION_ALGORITHM" == "rsa" ]; then
+      encryption_algorithm_valid=1
+    else
+      echo "Invalid encryption algorithm specified, try again.."
+    fi
+  done
 fi
 
 apt_switches="-qq -o=Dpkg::Use-Pty=0" # Silence all output except errors.
