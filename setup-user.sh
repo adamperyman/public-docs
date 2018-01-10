@@ -99,7 +99,9 @@ if sudo git clone --depth=1 https://github.com/amix/vimrc.git $new_user_home_dir
   # AP's custom settings.
   mkdir -p $new_user_home_dir/dev
   sudo git clone https://github.com/x0bile/vim-settings.git $new_user_home_dir/dev/vim-settings
-  (cd $new_user_home_dir/dev/vim-settings ; sh $new_user_home_dir/dev/vim-settings/setup.sh)
+
+  # Sub-shell to create new working dir for setup.sh.
+  (cd $new_user_home_dir/dev/vim-settings ; sudo -S sh $new_user_home_dir/dev/vim-settings/setup.sh)
 else
   echo "Failed to get Amix's .vimrc, didn't setup AP's custom settings."
 fi

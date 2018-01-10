@@ -41,7 +41,7 @@ fi
 if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
   echo "ENV var SSH_ENCRYPTION_ALGORITHM is undefined."
 
-  echo -n "Please enter SHH encryption algorithm (ed25519 or rsa): "
+  echo -n "Please enter SSH encryption algorithm (ed25519 or rsa): "
   read SSH_ENCRYPTION_ALGORITHM
 fi
 
