@@ -78,7 +78,7 @@ else
 fi
 
 echo "Logging in as $NEW_USER.."
-if su $NEW_USER && cd ~; then
+if sudo su $NEW_USER && cd ~; then
   echo "Successfully logged in as $NEW_USER."
 else
   echo "Failed to login as $NEW_USER, current user is $NEW_USER."
