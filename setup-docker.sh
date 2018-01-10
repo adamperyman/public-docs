@@ -40,14 +40,14 @@ apt_install_cmd="apt-get $apt_switches install"
 if [ -d "/root/.ssh/" ]; then
   if [ "$SSH_ENCRYPTION_ALGORITHM" == "ed25519" ]; then
     echo "Creating SSH keys for ROOT user using $SSH_ENCRYPTION_ALGORITHM algorithm.."
-    ssh-keygen -t ed25519 -a 100 -N "" -c $USER_EMAIL -f $HOME/.ssh/id_ed25519
+    ssh-keygen -t ed25519 -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_ed25519
   elif [ "$SSH_ENCRYPTION_ALGORITHM" == "rsa" ]; then
     echo "Creating SSH keys for ROOT user using RSA algorithm.."
-    ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -c $USER_EMAIL -f $HOME/.ssh/id_rsa
+    ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_rsa
   else
     echo "Unknown SSH_ENCRYPTION_ALGORITHM, defaulting to RSA."
     echo "Creating SSH keys for ROOT user using RSA algorithm.."
-    ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -c $USER_EMAIL -f $HOME/.ssh/id_rsa
+    ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_rsa
   fi
 
   echo "Finished creating SSH keys."
@@ -85,8 +85,7 @@ else
 fi
 
 echo "Logging in as $USER_NAME.."
-sudo su $USER_NAME
-if [ $? -eq 0 ]; then
+if sudo -u $USER_NAME -c "cd ~"; then
   echo "Successfully logged in as $USER_NAME."
 else
   echo "Failed to login as $USER_NAME, current user is $USER_NAME."
@@ -157,14 +156,14 @@ fi
 # Setup SSH, use Ed25519 (new) or RSA depending on your needs.
 if [ "$SSH_ENCRYPTION_ALGORITHM" == "ed25519" ]; then
   echo "Creating SSH keys using $SSH_ENCRYPTION_ALGORITHM algorithm.."
-  ssh-keygen -t ed25519 -a 100 -N "" -c $USER_EMAIL -f $HOME/.ssh/id_ed25519
+  ssh-keygen -t ed25519 -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_ed25519
 elif [ "$SSH_ENCRYPTION_ALGORITHM" == "rsa" ]; then
   echo "Creating SSH keys using RSA algorithm.."
-  ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -c $USER_EMAIL -f $HOME/.ssh/id_rsa
+  ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_rsa
 else
   echo "Unknown SSH_ENCRYPTION_ALGORITHM, defaulting to RSA."
   echo "Creating SSH keys using RSA algorithm.."
-  ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -c $USER_EMAIL -f $HOME/.ssh/id_rsa
+  ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -C $USER_EMAIL -f $HOME/.ssh/id_rsa
 fi
 
 echo "Finished creating SSH keys."
