@@ -40,7 +40,7 @@ apt_install_cmd="apt-get $apt_switches install"
 if [ -d "/root/.ssh/" ]; then
   if [ "$SSH_ENCRYPTION_ALGORITHM" == "ed25519" ]; then
     echo "Creating SSH keys for ROOT user using $SSH_ENCRYPTION_ALGORITHM algorithm.."
-    ssh-keygen -t ed25519 -a 100 -N "" -c $USER_EMAIL -f $HOME/.ssh/id_ed25519 # Similar complexity to RSA 4096 but significantly smaller.
+    ssh-keygen -t ed25519 -a 100 -N "" -c $USER_EMAIL -f $HOME/.ssh/id_ed25519
   elif [ "$SSH_ENCRYPTION_ALGORITHM" == "rsa" ]; then
     echo "Creating SSH keys for ROOT user using RSA algorithm.."
     ssh-keygen -t rsa -b 4096 -o -a 100 -N "" -c $USER_EMAIL -f $HOME/.ssh/id_rsa
@@ -86,6 +86,7 @@ fi
 
 echo "Logging in as $USER_NAME.."
 su $USER_NAME
+sudo
 if [ $? -eq 0 ]; then
   echo "Successfully logged in as $USER_NAME."
 else
