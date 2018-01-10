@@ -7,6 +7,11 @@ SSH_ENCRYPTION_ALGORITHM=$4
 
 new_user_home_dir=$(eval echo "~$USER_NAME")
 
+if [ -z ${new_user_home_dir:x} ]; then
+  echo "new_user_home_dir is undefined."
+  exit 1
+fi
+
 # Clean up.
 sudo -S apt-get remove docker docker-engine docker.io
 
