@@ -65,7 +65,7 @@ if [ ! -d "$HOME/.ssh/" ]; then
 
   echo "Finished creating SSH keys."
 else
-  echo "$HOME/.ssh directory already exists, skipping SSH key generation.."
+  echo "$HOME/.ssh directory already exists, skipping SSH key generation for ROOT user.."
 fi
 
 # Install deps.
