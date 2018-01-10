@@ -1,5 +1,10 @@
 #!/bin/bash
 
+USER_NAME=$1
+USER_PASS=$2
+USER_EMAIL=$3
+SSH_ENCRYPTION_ALGORITHM=$4
+
 # Clean up.
 sudo -S apt-get remove docker docker-engine docker.io
 

@@ -11,18 +11,31 @@ if [ -z ${USER_NAME+x} ]; then
   read USER_NAME
 fi
 
+if [ -z ${USER_PASS+x} ]; then
+  echo "ENV var USER_PASS is undefined."
+
+  password_valid=0
+  while [ $password_valid == 0 ]; do
+    echo -n "Please enter new password: "
+    read -s USER_PASS1
+
+    echo -n "Please enter password again: "
+    read -S USER_PASS2
+
+    if [ "$USER_PASS1" == "$USER_PASS2" ]; then
+      password_valid=1
+      USER_PASS=USER_PASS1
+    else
+      echo "Passwords don't match! Try again.."
+    fi
+  done
+fi
+
 if [ -z ${USER_EMAIL+x} ]; then
   echo "ENV var USER_EMAIL is undefined."
 
   echo -n "Please enter the new user's email: "
   read USER_EMAIL
-fi
-
-if [ -z ${USER_PASS+x} ]; then
-  echo "ENV var USER_PASS is undefined."
-
-  echo -n "Please enter new password: "
-  read USER_PASS
 fi
 
 if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
@@ -84,4 +97,4 @@ else
   exit 1
 fi
 
-su $USER_NAME -c "bash setup-user.sh"
+su $USER_NAME -c "bash setup-user.sh $USER_NAME $USER_PASS $USER_EMAIL $SSH_ENCRYPTION_ALGORITHM"
