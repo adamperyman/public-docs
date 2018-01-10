@@ -110,6 +110,8 @@ while [ "$should_add_pub_key" != "n" ]; do
     echo $pub_key >> $new_user_home_dir/.ssh/authorized_keys
 
     echo "Successfully added public key to $USER_NAME's authorized_keys."
+  else
+    enter_pub_key=n
   fi
 done
 
