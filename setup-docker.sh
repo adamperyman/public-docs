@@ -1,23 +1,33 @@
 #!/bin/bash
 
-# A hacky little setup script to automate the creation of VMs (docker version).
+# A hacky little setup script to automate the creation of VMs.
 # Author: Adam Peryman <adam.peryman@gmail.com>
 # Tested on Ubuntu 16.04 LTS
 
 if [ -z ${NEW_USER+x} ]; then
   echo "ENV var NEW_USER is undefined."
-  exit 1
+
+  echo -n "Please enter new username: "
+  read NEW_USER
 fi
 
 if [ -z ${NEW_PASSWORD+x} ]; then
   echo "ENV var NEW_PASSWORD is undefined."
-  exit 1
+
+  echo -n "Please enter new password: "
+  read NEW_PASSWORD
 fi
 
 if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
   echo "ENV var SSH_ENCRYPTION_ALGORITHM is undefined."
-  exit 1
+
+  echo -n "Please enter SHH encryption algorithm (ed25519 or rsa): "
+  read SSH_ENCRYPTION_ALGORITHM
 fi
+
+apt_switches="-qq -o=Dpkg::Use-Pty=0" # Silence all output except errors.
+apt_update_cmd="apt-get $apt_switches update"
+apt_install_cmd="apt-get $apt_switches install"
 
 # Setup SSH for root if necessary, use Ed25519 (new) or RSA depending on your needs.
 if [ -d "/root/.ssh/" ]; then
@@ -37,8 +47,7 @@ if [ -d "/root/.ssh/" ]; then
 fi
 
 # Install deps.
-apt-get update -qq &&
-  apt-get install -qq -o=Dpkg::Use-Pty=0 whois git apt-utils
+$apt_update_cmd && $apt_install_cmd whois git apt-utils
 
 # Get password hash.
 echo "Creating hashed password.."
@@ -77,11 +86,11 @@ else
 fi
 
 # Clean up.
-apt-get remove -qq docker docker-engine docker.io
+apt-get remove docker docker-engine docker.io
 
 # Here we go.
-sudo apt-get update -qq && \
-  apt-get install -qq -o=Dpkg::Use-Pty=0 \
+sudo $apt_update_cmd && \
+  sudo $apt_install_cmd \
     linux-image-extra-$(uname -r) \
     linux-image-extra-virtual \
     apt-transport-https \
@@ -103,8 +112,7 @@ sudo add-apt-repository \
   $(lsb_release -cs) \
   stable"
 
-sudo apt-get update -qq && \
-  apt-get install -qq -o=Dpkg::Use-Pty=0 docker-ce
+sudo $apt_update_cmd && sudo $apt_install_cmd docker-ce
 
 sudo apt-key fingerprint 0EBFCD88
 if [ $? -eq 0 ]; then
@@ -154,8 +162,8 @@ fi
 echo "Finished creating SSH keys."
 
 # Setup Vim.
-sudo apt-get update -qq &&
-  apt-get install -qq -o=Dpkg::Use-Pty=0 vim-gnome # Lazy man's way of ensuring Vim was compiled with the +clipboard flag.
+# Installing vim-gnome is the lazy man's way of ensuring Vim was compiled with the +clipboard flag.
+sudo $apt_update_cmd && sudo $apt_install_cmd vim-gnome
 
 # Amix's .vimrc.
 if git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime; then
@@ -175,5 +183,3 @@ cat ~/.ssh/id_$SSH_ENCRYPTION_ALGORITHM.pub
 
 echo "We're done here, please logout and back in to refresh user groups for user: $NEW_USER."
 echo "Have a wonderful day! :)"
-
-exit 0
