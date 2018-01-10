@@ -42,7 +42,7 @@ if [ -z ${SSH_ENCRYPTION_ALGORITHM+x} ]; then
   echo "ENV var SSH_ENCRYPTION_ALGORITHM is undefined."
 
   encryption_algorithm_valid=0
-  while [ $encryption_algorithm_valid == 0]; do
+  while [ $encryption_algorithm_valid == 0 ]; do
     read -s -p "Please enter SSH encryption algorithm (ed25519 or rsa): " SSH_ENCRYPTION_ALGORITHM
     echo
 
